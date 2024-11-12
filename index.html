@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generador de Contraseñas</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+  <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
+    <h1 class="text-2xl font-bold mb-4">Generador de Contraseñas</h1>
+    <div class="mb-4">
+      <label for="name" class="block font-medium mb-2">Nombre o Característica:</label>
+      <input type="text" id="name" name="name" class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm">
+    </div>
+    <div class="mb-4">
+      <label for="length" class="block font-medium mb-2">Longitud de la contraseña:</label>
+      <input type="number" id="length" name="length" min="8" max="32" value="16" class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm">
+    </div>
+    <div class="mb-4">
+      <label class="block font-medium mb-2">
+        <input type="checkbox" id="include-special" name="include-special" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out">
+        Incluir caracteres especiales
+      </label>
+    </div>
+    <button id="generate-password" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded w-full">
+      Generar Contraseña
+    </button>
+    <div class="mt-4">
+      <label for="password-output" class="block font-medium mb-2">Tu nueva contraseña:</label>
+      <input type="text" id="password-output" name="password-output" readonly class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm">
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('generate-password').addEventListener('click', () => {
+      const name = document.getElementById('name').value;
+      const length = document.getElementById('length').value;
+      const includeSpecial = document.getElementById('include-special').checked;
+      const password = generatePassword(length, includeSpecial, name);
+      document.getElementById('password-output').value = password;
+    });
+
+    function generatePassword(length, includeSpecial, name = '') {
+      const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let charset = characters;
+      if (includeSpecial) {
+        charset += '!@#$%^&*()_+~`|}{[]\:;?><,./-=';
+      }
+      let password = '';
+      for (let i = 0; i < length; i++) {
+        password += charset.charAt(Math.floor(Math.random() * charset.length));
+      }
+      if (name) {
+        password = `${name}: ${password}`;
+      }
+      return password;
+    }
+  </script>
+</body>
+</html>
