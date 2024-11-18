@@ -1,61 +1,114 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Generador de Contraseñas</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>Generador de Contraseñas Simple</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .checkbox-group {
+            margin: 10px 0;
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: auto;
+            margin-right: 5px;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center h-screen">
-  <div class="bg-white shadow-md rounded-lg p-8 w-full max-w-md">
-    <h1 class="text-2xl font-bold mb-4">Generador de Contraseñas</h1>
-    <div class="mb-4">
-      <label for="name" class="block font-medium mb-2">Nombre o Característica:</label>
-      <input type="text" id="name" name="name" class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm">
-    </div>
-    <div class="mb-4">
-      <label for="length" class="block font-medium mb-2">Longitud de la contraseña:</label>
-      <input type="number" id="length" name="length" min="8" max="32" value="16" class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm">
-    </div>
-    <div class="mb-4">
-      <label class="block font-medium mb-2">
-        <input type="checkbox" id="include-special" name="include-special" class="form-checkbox h-4 w-4 text-indigo-600 transition duration-150 ease-in-out">
-        Incluir caracteres especiales
-      </label>
-    </div>
-    <button id="generate-password" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded w-full">
-      Generar Contraseña
-    </button>
-    <div class="mt-4">
-      <label for="password-output" class="block font-medium mb-2">Tu nueva contraseña:</label>
-      <input type="text" id="password-output" name="password-output" readonly class="border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 block w-full sm:text-sm">
-    </div>
-  </div>
+<body>
+    <div class="container">
+        <h1>Generador de Contraseñas</h1>
+        
+        <!-- Agregamos el campo para características -->
+        <div class="form-group">
+            <label for="caracteristica">Característica (opcional):</label>
+            <input type="text" id="caracteristica" placeholder="Ej: Nombre, Sobrenombre, etc">
+        </div>
 
-  <script>
-    document.getElementById('generate-password').addEventListener('click', () => {
-      const name = document.getElementById('name').value;
-      const length = document.getElementById('length').value;
-      const includeSpecial = document.getElementById('include-special').checked;
-      const password = generatePassword(length, includeSpecial, name);
-      document.getElementById('password-output').value = password;
-    });
+        <div class="form-group">
+            <label for="longitud">Longitud de la contraseña:</label>
+            <input type="number" id="longitud" value="8" min="4" max="20">
+        </div>
 
-    function generatePassword(length, includeSpecial, name = '') {
-      const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-      let charset = characters;
-      if (includeSpecial) {
-        charset += '!@#$%^&*()_+~`|}{[]\:;?><,./-=';
-      }
-      let password = '';
-      for (let i = 0; i < length; i++) {
-        password += charset.charAt(Math.floor(Math.random() * charset.length));
-      }
-      if (name) {
-        password = `${name}: ${password}`;
-      }
-      return password;
-    }
-  </script>
+        <div class="checkbox-group">
+            <label>
+                <input type="checkbox" id="especiales">
+                Incluir caracteres especiales (@#$%)
+            </label>
+        </div>
+
+        <button onclick="generarContrasena()">Generar Contraseña</button>
+
+        <div class="form-group">
+            <label for="resultado">Tu contraseña:</label>
+            <input type="text" id="resultado" readonly>
+        </div>
+    </div>
+
+    <script>
+        function generarContrasena() {
+            // Obtener los valores ingresados
+            const longitud = document.getElementById('longitud').value;
+            const usarEspeciales = document.getElementById('especiales').checked;
+            const caracteristica = document.getElementById('caracteristica').value.trim();
+            
+            // Definir los caracteres que se pueden usar
+            let caracteres = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            
+            // Agregar caracteres especiales si se seleccionó la opción
+            if (usarEspeciales) {
+                caracteres += '@#$%';
+            }
+            
+            // Generar la contraseña base
+            let contrasena = '';
+            for (let i = 0; i < longitud; i++) {
+                const posicionAleatoria = Math.floor(Math.random() * caracteres.length);
+                contrasena += caracteres[posicionAleatoria];
+            }
+            
+            // Agregar la característica si se proporcionó una
+            if (caracteristica) {
+                contrasena = caracteristica + ': ' + contrasena;
+            }
+            
+            // Mostrar la contraseña en el campo de resultado
+            document.getElementById('resultado').value = contrasena;
+        }
+    </script>
 </body>
 </html>
